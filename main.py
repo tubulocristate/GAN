@@ -27,7 +27,6 @@ def main():
 
     
     # TRAINING
-    min_grads, max_grads = [], []
     for i in range(1001):
         for k in range(2):
             optimizer_D.zero_grad()
@@ -37,7 +36,6 @@ def main():
             #discriminator_loss_sin = -torch.log(D(sin)) - torch.log(1 - D(G(noise)))
             #discriminator_loss = (discriminator_loss_square + discriminator_loss_circle + discriminator_loss_sin)/3
             discriminator_loss = discriminator_loss_square
-            #discriminator_loss = discriminator_loss_sin
             discriminator_loss.backward()
             optimizer_D.step()
 
@@ -46,18 +44,11 @@ def main():
         generator_loss = -torch.log(D(G(noise)))
         generator_loss.backward()
         optimizer_G.step()
-        
-        #min_grads.append(torch.min(G.linear_relu_sequence[2].weight.grad))
-        #max_grads.append(torch.max(G.linear_relu_sequence[2].weight.grad))
-        if i % 100 == 0:
+
+       if i % 100 == 0:
             image = G(noise)
             image = image.cpu().detach().numpy()
             figures_creator.display_image(image[0])
-
-    #plt.plot(min_grads, label="min")
-    #plt.plot(max_grads, label="max")
-    #plt.legend()
-    #plt.show()
 
     return 0
 
